@@ -15,6 +15,8 @@
 }
 [hidden]{display:none!important}
 html,body{height:100%}
+.app,.sheet header,.opts,.gamebtns,.tomb button,.zoom,.world{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+button,label{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:12px;overscroll-behavior:none}
 .app{height:100%;max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:8px;padding-block:10px 12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-sizing:border-box}
 .top{display:flex;align-items:baseline;justify-content:space-between;gap:4px 16px;flex-wrap:wrap}
@@ -95,6 +97,22 @@ kbd{font-family:var(--mono);border:1px solid var(--line);border-radius:3px;paddi
 .slider input{flex:1;min-width:0;accent-color:var(--accent)}
 .slider output{font-family:var(--mono);min-width:3.4em;text-align:right;font-variant-numeric:tabular-nums}
 .set .note{color:var(--muted);font-size:11px;margin:6px 0 0}
+.mtitle{display:flex;align-items:center;gap:10px}
+.mg{font-size:22px;line-height:1;width:1.1em;text-align:center}
+.mon .mstat,.mon .mchance{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:4px 0 10px}
+.mon .mchance{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px}
+.mon .mstat div,.mon .mchance div{background:var(--panel2);border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mon .mstat span,.mon .mchance span{color:var(--muted);font-size:10.5px}
+.mon .mstat b,.mon .mchance b{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.mbar{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--muted)}
+.mbar .bar{flex:1;height:6px;border-radius:3px;background:var(--panel2);overflow:hidden}
+.mbar .bar i{display:block;height:100%;background:var(--hp)}
+.mstate{margin:6px 0 0;font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+.msp{margin:0;padding-left:18px}
+.msp li{margin:2px 0}
+.mtip{margin:0}
+.halnote{margin:0 0 8px;color:var(--hp);font-family:var(--mono);font-size:11.5px}
+@media (max-width:480px){.mon .mstat{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .gamebtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .gamebtns button{font-family:var(--mono);font-size:12px;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
 .gamebtns button:disabled{opacity:.45;cursor:default}
@@ -135,7 +153,7 @@ kbd{font-family:var(--mono);border:1px solid var(--line);border-radius:3px;paddi
       <button type="button" class="btn" data-k="?">Hilfe<kbd>?</kbd></button>
     </div>
   </div>
-  <p class="keys">Bewegen wie im Original mit <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd><kbd>y</kbd><kbd>u</kbd><kbd>b</kbd><kbd>n</kbd> (Großbuchstaben: rennen) oder mit den Pfeiltasten in Bildrichtung. In einen Gegner laufen greift an. Tippen oder Klicken aufs Feld läuft dorthin. Weitere Befehle unter <kbd>?</kbd>.</p>
+  <p class="keys">Bewegen wie im Original mit <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd><kbd>y</kbd><kbd>u</kbd><kbd>b</kbd><kbd>n</kbd> (Großbuchstaben: rennen) oder mit den Pfeiltasten in Bildrichtung. Angreifen: mit dem Steuerkreuz oder den Tasten in den Gegner laufen. Tippen aufs Feld läuft dorthin, Tippen auf ein Monster zeigt seinen Steckbrief. Weitere Befehle unter <kbd>?</kbd>.</p>
 </div>
 <div class="sheet" id="sheet" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
   <header><span id="sheetTitle">Inventar</span><button type="button" id="sheetX">Schließen</button></header>
@@ -158,6 +176,7 @@ kbd{font-family:var(--mono);border:1px solid var(--line);border-radius:3px;paddi
       <tr><td><kbd>&gt;</kbd></td><td>Treppe hinabsteigen</td></tr>
       <tr><td><kbd>o</kbd></td><td>Einstellungen: Darstellung, Helligkeit, Spielstand</td></tr>
       <tr><td><kbd>S</kbd></td><td>Spielstand speichern</td></tr>
+      <tr><td>Tippen auf Monster</td><td>Steckbrief mit Werten und Besonderheiten</td></tr>
     </table>
     <h3>Zeichen</h3>
     <table>
@@ -177,6 +196,7 @@ kbd{font-family:var(--mono);border:1px solid var(--line);border-radius:3px;paddi
     <h3>Darstellung</h3>
     <div class="opts" role="radiogroup" aria-label="Darstellung">
       <label class="opt"><input type="radio" name="design" value="welten" id="dWelten"><span><b>Wechselnde Welten</b><small>Jede Ebene bekommt zufällig eine von sechs Welten: Mondtempel, Bernsteingruft, Moorgrotte, Glutschlund, Irrlichtkrypta oder Mondfrost.</small></span></label>
+      <label class="opt"><input type="radio" name="design" value="ascii" id="dAscii"><span><b>ASCII-Welten</b><small>Alles nur aus Textzeichen, ohne getönte Flächen. Jede Ebene bekommt zufällig eine von sechs Welten: Kerzenschein, Phosphor 1980, Mondfrost, Moosgemäuer, Glutkammer oder Federzeichnung.</small></span></label>
       <label class="opt"><input type="radio" name="design" value="klassisch" id="dKlass"><span><b>Klassisch</b><small>Die bisherige Darstellung mit hellen Steinblöcken.</small></span></label>
       <label class="opt"><input type="radio" name="design" value="aquarell" id="dAqua"><span><b>Aquarell</b><small>Wasserfarbe und Tusche auf Papier, auf allen Ebenen.</small></span></label>
     </div>
@@ -189,6 +209,10 @@ kbd{font-family:var(--mono);border:1px solid var(--line);border-radius:3px;paddi
     <div class="gamebtns"><button type="button" id="saveNow">Jetzt speichern</button><button type="button" id="loadNow">Gespeicherten Stand laden</button><button type="button" id="newNow">Neues Spiel</button></div>
     <p class="note">Das Spiel speichert auch von selbst: beim Betreten einer neuen Ebene, alle 25 Züge und wenn du die Seite verlässt. Der Spielstand bleibt nach dem Laden erhalten, du kannst also jederzeit dorthin zurück.</p>
   </div>
+</div></div>
+<div class="sheet" id="monSheet" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="monTitle">
+  <header><span id="monTitle" class="mtitle">Monster</span><button type="button" id="monX">Schließen</button></header>
+  <div class="help mon" id="monBody"></div>
 </div></div>
 <div class="tomb" id="tomb" hidden><div class="box"><pre id="tombTxt"></pre><button type="button" id="againLoad" class="sec" hidden>Letzten Spielstand laden</button><button type="button" id="again">Neues Spiel</button></div></div>
 <script>
@@ -263,7 +287,7 @@ let G=null;           // Namen der unbekannten Gegenstände und Wissen für dies
 let P=null;           // Held
 let depth=1,map,roomAt,rooms,objs,mons,traps,seen,vis,memObj,stairs,turn=0,dead=false,msgs=[],msgSeq=0,between=0,wanderWait=0,distF=null,animQ=[];
 let levelHook=null,lasurInv=null,DESIGN='welten',BR=.4,RM=1,FOGK=.85;
-try{const d=localStorage.getItem('verliese-design');if(d==='welten'||d==='klassisch'||d==='aquarell')DESIGN=d;}catch(e){}
+try{const d=localStorage.getItem('verliese-design');if(d==='welten'||d==='ascii'||d==='klassisch'||d==='aquarell')DESIGN=d;}catch(e){}
 const idx=(x,y)=>y*W+x;
 const inb=(x,y)=>x>=0&&y>=0&&x<W&&y<H;
 const at=(x,y)=>inb(x,y)?map[y][x]:' ';
@@ -960,7 +984,7 @@ onTurn=refresh;
 
 // ---------- Eingabe ----------
 let mode=null,runTok=0;
-const busy=()=>lock||dead||fxQ.some(f=>f.t<0||(f.k==='lunge'&&f.t<.2))||!$('sheet').hidden||!$('helpSheet').hidden||!$('setSheet').hidden||animQ.some(a=>a.kind!=='flash');
+const busy=()=>lock||dead||fxQ.some(f=>f.t<0||(f.k==='lunge'&&f.t<.2))||!$('sheet').hidden||!$('helpSheet').hidden||!$('setSheet').hidden||!$('monSheet').hidden||animQ.some(a=>a.kind!=='flash');
 function act(fn){if(busy())return false;stopRun();const r=fn();refresh();return r;}
 function stopRun(){runTok++;}
 const screenToWorld=(sx,sy)=>[Math.sign(sx+sy),Math.sign(sy-sx)];
@@ -1020,6 +1044,7 @@ stage.addEventListener('click',ev=>{
   stage.focus({preventScroll:true});
   const r=stage.getBoundingClientRect(),[tx,ty]=pickTile(ev.clientX-r.left,ev.clientY-r.top),dx=tx-P.x,dy=ty-P.y,c=Math.max(Math.abs(dx),Math.abs(dy));
   if(mode&&mode.type==='dir'){if(c>=1){giveDir([Math.sign(dx),Math.sign(dy)]);}return;}
+  {const m=monUnder(ev.clientX-r.left,ev.clientY-r.top,tx,ty);if(m){if(!$('sheet').hidden||!$('helpSheet').hidden||!$('setSheet').hidden)return;stopRun();openMon(m);return;}}
   if(busy())return;
   if(c===0){act(()=>{endTurn();return true;});return;}
   if(c===1){step([dx,dy]);return;}
@@ -1113,9 +1138,9 @@ const NUM={Numpad4:'h',Numpad2:'j',Numpad8:'k',Numpad6:'l',Numpad7:'y',Numpad9:'
 const ARROW={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
 window.addEventListener('keydown',ev=>{
   if(ev.metaKey||ev.ctrlKey||ev.altKey)return;
-  if(ev.key==='Escape'){if(mode){endMode();msg('Abgebrochen.');refresh();}closeSheet();$('helpSheet').hidden=true;$('setSheet').hidden=true;stopRun();return;}
+  if(ev.key==='Escape'){if(mode){endMode();msg('Abgebrochen.');refresh();}closeSheet();$('helpSheet').hidden=true;$('setSheet').hidden=true;if(!$('monSheet').hidden)closeMon();stopRun();return;}
   if(!$('sheet').hidden){const i=ev.key.charCodeAt(0)-97;if(ev.key.length===1&&i>=0&&i<P.pack.length){const rows=[...document.querySelectorAll('#sheetList .row')];if(rows[i]&&!rows[i].disabled){ev.preventDefault();pickRow(P.pack[i],rows[i]);}}return;}
-  if(!$('helpSheet').hidden||!$('setSheet').hidden)return;
+  if(!$('helpSheet').hidden||!$('setSheet').hidden||!$('monSheet').hidden)return;
   let d=null,runIt=false;
   if(ARROW[ev.key]){const s=ARROW[ev.key];d=screenToWorld(s[0],s[1]);runIt=ev.shiftKey;}
   else if(NUM[ev.code]){d=VI[NUM[ev.code]];}
@@ -1287,7 +1312,114 @@ const LTH=[
 }];
 
 
+const ATH=[
+{ id:'a-kerze',name:'Kerzenschein',weight:700,
+  desc:'Ziegel aus <b>[==]</b>, Fugen aus <b>-</b>, Steinplatten aus <b>.,:;+</b>. Fackeln flackern aus <b>^*"</b> und werfen warmes Licht, das in Schwärze verebbt.',
+  bg:'#0c0806',fog:'12,8,6',fogMax:.88,bloom:.38,shadow:'rgba(0,0,0,.55)',door:'#e7a75a',dust:'#ffd9a8',
+  ui:{fg:'#f3e2c8',muted:'#a08a72',accent:'#ffb057',chip:'#1a130e',line:'#3a2b1f'},
+  player:{col:'255,196,130',r:7.2,tint:.16},torch:{style:'fire',col:'255,150,60',r:4.6,tint:.22,flames:['#fff4c8','#ffc65a','#ff8a2a','#c8401a']},
+  amb:['dust','sparks'],
+  floor(D,x,y,R){const g=hsl(24,30,17,.9),tl=R()*8;
+    for(let k=0;k<4;k++){D.flat((k+.5)/4,.05,'-',g,30);D.flat(.05,(k+.5)/4,'-',g,30,Q);}
+    for(let j=0;j<3;j++)for(let i=0;i<3;i++){const u=.3+i*.25+(R()-.5)*.06,v=.3+j*.25+(R()-.5)*.06,n=fbm((x+u)*.8,(y+v)*.8,1);
+      const ch=ramp('  .,:;+=*',n+(R()-.5)*.3);if(ch!==' ')D.flat(u,v,ch,hsl(30-n*8,28+n*22,26+n*36+tl),30);}},
+  corr(D,x,y,R){for(let j=0;j<2;j++)for(let i=0;i<2;i++)D.flat(.28+i*.44,.28+j*.44,R()<.75?'#':':',hsl(25,24,22+R()*10),34);},
+  wall:{fs:5.4,
+    face(s,i,j,nc,nr,x,y,R){const gi=i+(s==='L'?x:99-y)*nc,p=(gi+(j%2)*2)%4;let ch=p===0?'[':p===3?']':'=';
+      if(R()<.07)ch=R()<.5?'.':':';return[ch,hsl(26,52,(s==='L'?62:36)-j*2.6+R()*7)];},
+    top(D,x,y,z,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++)D.flat((i+.5)/3,(j+.5)/3,R()<.2?'+':'#',hsl(32,30,64+R()*12),34,0,z);}},
+  water(D,x,y,t){for(let j=0;j<3;j++)for(let i=0;i<3;i++){const ph=Math.sin(t*1.7+(x+i/3)*2.2+(y+j/3)*1.3);D.flat((i+.5)/3,(j+.5)/3,ph>.55?'≈':ph>-.3?'~':'-',hsl(205,42,26+ph*16),34);}}
+},
+{ id:'a-phosphor',name:'Phosphor 1980',weight:700,
+  desc:'Nur ASCII, nur Grün. Die Mauern sind die alten <b>|</b> und <b>-</b> von 1980, zu Blöcken aufgeschichtet. Der Boden ist ein Raster aus <b>.</b>, das auf dem Bildschirm nachglüht.',
+  bg:'#020904',fog:'2,9,4',fogMax:.8,bloom:.95,shadow:'rgba(0,0,0,.6)',door:'#8dffaa',dust:'#7dff9e',
+  ui:{fg:'#c9ffd6',muted:'#4fa866',accent:'#5dff8a',chip:'#04150a',line:'#0f3b1c'},
+  player:{col:'120,255,160',r:7.6,tint:.06},torch:null,amb:['dust'],
+  tone(kind){return kind==='mon'?'#c8ffd6':kind==='player'?'#ffffff':'#5dff8a';},
+  floor(D,x,y,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++){const n=fbm((x+i/3)*.9,(y+j/3)*.9,3);D.flat((i+.5)/3,(j+.5)/3,n>.68?':':'.',hsl(140,95,20+n*26),34);}},
+  corr(D,x,y,R){for(let j=0;j<2;j++)for(let i=0;i<2;i++)D.flat(.28+i*.44,.28+j*.44,'#',hsl(140,90,26+R()*8),36);},
+  wall:{fs:5.6,
+    face(s,i,j,nc,nr,x,y,R){const edge=i===0||i===nc-1;if(s==='L')return[j===0?'=':'|',hsl(140,100,j===0?74:(edge?66:54)-j*2.5)];
+      return[j===0?'=':'-',hsl(140,100,j===0?44:(edge?36:30)-j*1.6)];},
+    top(D,x,y,z,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++)D.flat((i+.5)/3,(j+.5)/3,'+',hsl(140,100,62+R()*10),34,0,z);}},
+  water(D,x,y,t){for(let j=0;j<3;j++)for(let i=0;i<3;i++){const ph=Math.sin(t*2+(x+i/3)*2+(y+j/3)*1.6);D.flat((i+.5)/3,(j+.5)/3,ph>0?'~':'-',hsl(140,100,24+ph*14),34);}}
+},
+{ id:'a-frost',name:'Mondfrost (ASCII)',weight:700,
+  desc:'Eisblöcke aus <b>/\\/\\</b>, Eiszapfen aus <b>V v |</b>, Raureif aus <b>.·:*</b>. Durch ein Loch in der Decke fällt Mondlicht, und mit ihm Schnee aus <b>* · +</b>.',
+  bg:'#03060c',fog:'3,6,12',fogMax:.86,bloom:.5,shadow:'rgba(0,0,0,.6)',door:'#bfe3ff',dust:'#dceeff',
+  ui:{fg:'#dfeeff',muted:'#7d93b4',accent:'#9fd0ff',chip:'#0a1220',line:'#1d2c44'},
+  player:{col:'170,205,255',r:6.8,tint:.08},torch:{style:'crystal',col:'110,190,255',r:3.4,tint:.2,flames:['#ffffff','#bfe6ff','#6fb8f0','#3a7cc8']},
+  moon:{x:26.5,y:9.5,r:5.2,col:'205,225,255',tint:.2},amb:['snow','glitter'],
+  floor(D,x,y,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++){const u=(i+.5)/3+(R()-.5)*.08,v=(j+.5)/3+(R()-.5)*.08,n=fbm((x+u)*.75,(y+v)*.75,5);
+      const ch=ramp(' ..·:*',n+(R()-.5)*.25);if(ch!==' ')D.flat(u,v,ch,hsl(208,55,26+n*46),32);}
+    if(R()<.25)D.flat(R()*.8+.1,R()*.8+.1,'~',hsl(200,40,40),30);},
+  corr(D,x,y,R){for(let j=0;j<2;j++)for(let i=0;i<2;i++)D.flat(.28+i*.44,.28+j*.44,R()<.7?'=':'-',hsl(212,40,28+R()*10),34);},
+  wall:{fs:5.4,
+    face(s,i,j,nc,nr,x,y,R){const gi=i+(s==='L'?x:99-y)*nc;
+      if(j===0)return[pick(R,['V','v','|','\'','V','v']),hsl(195,80,s==='L'?92:62)];
+      return[(gi+j)%2?'/':'\\',hsl(202,70,(s==='L'?78:46)-j*3.2+R()*7)];},
+    top(D,x,y,z,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++)D.flat((i+.5)/3,(j+.5)/3,pick(R,['*','·','.','*']),hsl(205,45,82+R()*12),34,0,z);}},
+  water(D,x,y,t){for(let j=0;j<3;j++)for(let i=0;i<3;i++){const b=(x+y+(i+j)/3-t*2.2)%9,gl=Math.max(0,1-Math.abs((b+9)%9-4)*1.2);D.flat((i+.5)/3,(j+.5)/3,gl>.3?'+':'=',hsl(195,60,36+gl*50),34);}}
+},
+{ id:'a-moos',name:'Moosgemäuer',weight:700,
+  desc:'Feldsteine aus <b>O o 0 @</b>, darüber Moos aus <b>" , ;</b>. Gras wächst auf den Mauerkronen. Glühwürmchen aus <b>·</b> ziehen durch die Räume und tragen ihr eigenes Licht.',
+  bg:'#050905',fog:'5,9,5',fogMax:.84,bloom:.32,shadow:'rgba(0,0,0,.55)',door:'#d9c27a',dust:'#e6ffb0',
+  ui:{fg:'#e4efd4',muted:'#8a9a78',accent:'#c6e07a',chip:'#0f170d',line:'#24331e'},
+  player:{col:'235,240,190',r:7,tint:.1},torch:null,flies:9,wisp:['200,255,120'],amb:['flies'],
+  floor(D,x,y,R){for(let j=0;j<4;j++)for(let i=0;i<4;i++){const u=(i+.5)/4+(R()-.5)*.1,v=(j+.5)/4+(R()-.5)*.1,n=fbm((x+u)*.55,(y+v)*.55,11);
+      if(R()<.025){D.flat(u,v,'*',hsl(50,90,66),26);continue;}
+      if(n>.48)D.flat(u,v,pick(R,['"',',','\'','"',';']),hsl(92+R()*24,45,24+n*32),28);
+      else if(R()<.7)D.flat(u,v,pick(R,['.','o','.',',']),hsl(70,8,26+n*30),26);}},
+  corr(D,x,y,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++)if(R()<.8)D.flat((i+.5)/3,(j+.5)/3,R()<.6?':':'.',hsl(32,28,22+R()*12),30);},
+  wall:{fs:5.4,
+    face(s,i,j,nc,nr,x,y,R){const md=1+Math.floor(fbm((s==='L'?x+i/nc:y-i/nc)*1.4,(s==='L'?y:x)*1.4,5)*3.2);
+      if(j<md)return[pick(R,['"',',',';','"']),hsl(95+R()*20,50,(s==='L'?44:28)+R()*8)];
+      if(R()<.06)return[';',hsl(100,40,30)];
+      return[pick(R,['O','o','0','@','O']),hsl(60,7,(s==='L'?60:34)-j*2+R()*9)];},
+    top(D,x,y,z,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++){if(R()<.06){D.flat((i+.5)/3,(j+.5)/3,'*',hsl(330,70,72),30,0,z);continue;}
+      D.flat((i+.5)/3+(R()-.5)*.1,(j+.5)/3+(R()-.5)*.1,pick(R,['"',',','\'','"']),hsl(95+R()*20,55,42+R()*14),32,0,z);}}},
+  water(D,x,y,t){for(let j=0;j<3;j++)for(let i=0;i<3;i++){const h=hash2(x*3+i,y*3+j,4);if(h<.12){D.flat((i+.5)/3,(j+.5)/3,'o',hsl(110,50,40),34);continue;}
+      const ph=Math.sin(t*1.2+(x+i/3)*1.8+(y+j/3)*2.4);D.flat((i+.5)/3,(j+.5)/3,ph>.4?'~':'-',hsl(170,38,18+ph*10),34);}}
+},
+{ id:'a-glut',name:'Glutkammer',weight:700,
+  desc:'Obsidian aus <b>#%&8</b>, durchzogen von glühenden Rissen aus <b>/\\|</b>. Im Boden schimmern Adern aus <b>~</b>, im Becken brodelt Lava aus <b>~≈°</b>, Funken steigen auf.',
+  bg:'#0a0407',fog:'10,4,7',fogMax:.87,bloom:.7,shadow:'rgba(0,0,0,.6)',door:'#ff9a4a',dust:'#ffb070',
+  ui:{fg:'#f4dccf',muted:'#a07f86',accent:'#ff8a3d',chip:'#1a0a10',line:'#3a1c26'},
+  player:{col:'255,160,100',r:6.2,tint:.1},torch:{style:'fire',col:'255,110,40',r:4,tint:.25,flames:['#fff0b0','#ffb040','#ff6a1a','#b02a10']},
+  lava:{x:28.8,y:13.2,r:5.2,col:'255,90,30',tint:.3},amb:['embers'],
+  floor(D,x,y,R){for(let j=0;j<4;j++)for(let i=0;i<4;i++){const u=(i+.5)/4,v=(j+.5)/4,n=fbm((x+u)*.6,(y+v)*.6,21);
+      if(Math.abs(n-.5)<.03){D.flat(u,v,'~',hsl(22,100,52+R()*10),30,Math.PI/4);continue;}
+      const ch=ramp(' .,x.',n+(R()-.5)*.3);if(ch!==' ')D.flat(u,v,ch,hsl(292,12,18+n*20),28);}},
+  corr(D,x,y,R){for(let j=0;j<2;j++)for(let i=0;i<2;i++)D.flat(.28+i*.44,.28+j*.44,R()<.8?'x':'.',hsl(290,10,20+R()*8),34);},
+  wall:{fs:5.4,
+    face(s,i,j,nc,nr,x,y,R){const cc=Math.floor(hash2(x,y,s==='L'?1:2)*nc)+Math.round(Math.sin(j*1.2+x+y)*1.2);
+      if(i===cc&&hash2(x,y,9)<.75)return[pick(R,['/','\\','|']),hsl(28,100,(s==='L'?60:48)+R()*14)];
+      return[pick(R,['#','%','&','8','#']),hsl(285,14,(s==='L'?32:19)-j*1.4+R()*6)];},
+    top(D,x,y,z,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++){if(R()<.1){D.flat((i+.5)/3,(j+.5)/3,'.',hsl(25,100,55),40,0,z);continue;}
+      D.flat((i+.5)/3,(j+.5)/3,'^',hsl(290,12,36+R()*10),34,0,z);}}},
+  water(D,x,y,t){for(let j=0;j<3;j++)for(let i=0;i<3;i++){const ph=Math.sin(t*2.4+(x+i/3)*2.7+(y+j/3)*1.9)*.5+Math.sin(t*1.1-(x+i/3)*1.3)*.5;
+      D.flat((i+.5)/3,(j+.5)/3,ph>.6?'°':ph>.1?'≈':'~',hsl(14+ph*26,100,44+ph*20),36);}}
+},
+{ id:'a-feder',name:'Federzeichnung',weight:400,
+  desc:'Tinte auf Pergament. Schattenseiten sind mit <b>X</b> kreuzschraffiert, Lichtseiten mit <b>/ /</b> locker schraffiert, Kanten aus <b>| _ -</b>. Was das Licht nicht erreicht, verblasst ins leere Blatt.',
+  bg:'#ece2cb',fog:'236,226,203',fogMax:.55,bloom:0,shadow:'rgba(43,34,51,.22)',door:'#2b2233',dust:'#2b2233',light:true,
+  ui:{fg:'#2b2233',muted:'#7d6f62',accent:'#7a2a1c',chip:'#e3d7bc',line:'#cbbd9f'},
+  player:{col:'0,0,0',r:8.5,tint:0},torch:null,amb:[],
+  tone(kind,col){return kind==='mon'?'#8f2a1c':kind==='player'?'#16121e':kind==='gold'?'#9a6a10':'#2f3f86';},
+  floor(D,x,y,R){const ink='43,34,51';for(let k=0;k<4;k++)if(R()<.7)D.flat((k+.5)/4,.04,'-','rgba('+ink+',.45)',28);
+    for(let j=0;j<3;j++)for(let i=0;i<3;i++){const n=fbm((x+i/3)*.7,(y+j/3)*.7,31);if(R()<.35+n*.4)D.flat((i+.5)/3+(R()-.5)*.15,(j+.5)/3+(R()-.5)*.15,'.','rgba('+ink+','+(.5+n*.4).toFixed(2)+')',30);}},
+  corr(D,x,y,R){for(let j=0;j<3;j++)for(let i=0;i<3;i++)D.flat((i+.5)/3,(j+.5)/3,'/','rgba(43,34,51,.7)',30);},
+  wall:{fs:5.6,
+    face(s,i,j,nc,nr,x,y,R){const ink='rgba(43,34,51,';
+      if(i===0||i===nc-1)return['|',ink+'.85)'];if(j===nr-1)return['_',ink+'.85)'];
+      if(s==='L')return(i+j)%2?['/',ink+'.8)']:null;return['X',ink+(.8+R()*.2).toFixed(2)+')'];},
+    top(D,x,y,z,R){const c='rgba(43,34,51,.8)';for(let k=0;k<4;k++){D.flat((k+.5)/4,.05,'-',c,30,0,z);D.flat((k+.5)/4,.95,'-',c,30,0,z);D.flat(.05,(k+.5)/4,'-',c,30,Q,z);D.flat(.95,(k+.5)/4,'-',c,30,Q,z);}}},
+  water(D,x,y,t){for(let j=0;j<3;j++)for(let i=0;i<3;i++){const ph=Math.sin(t*1.1+(x+i/3)*2+(y+j/3)*1.4);D.flat((i+.5)/3+ph*.03,(j+.5)/3,'~','rgba(40,60,120,'+(.45+ph*.25).toFixed(2)+')',36);}}
+}];
+const ramp=(s,t)=>s[Math.max(0,Math.min(s.length-1,Math.floor(t*s.length)))];
 const WORLDS=['mond','bern','moor','glut','irr','frost'].map(id=>LTH.find(t=>t.id===id));
+const AWORLDS=ATH;
+const pool=()=>DESIGN==='ascii'?AWORLDS:WORLDS;
 const AQUA=LTH.find(t=>t.id==='aqua');
 let TH=WORLDS[0],lastWorld=-1,levelSeed=1;
 
@@ -1308,9 +1440,9 @@ function faceDraw(g,A,B,z,fs,fn){
   g.restore();
 }
 function diaPath(g,k,z){z=z||0;g.beginPath();g.moveTo(0,-HH*k-z);g.lineTo(HW*k,-z);g.lineTo(0,HH*k-z);g.lineTo(-HW*k,-z);g.closePath();}
-function fillDia(g,col,k,R){if(TH.fill.wash){g.save();g.translate((R()-.5)*HW*.08,(R()-.5)*HH*.08);diaPath(g,k*1.03);g.fillStyle=col;g.globalAlpha=.55;g.fill();g.restore();}
+function fillDia(g,col,k,R){if(!TH.fill)return;if(TH.fill.wash){g.save();g.translate((R()-.5)*HW*.08,(R()-.5)*HH*.08);diaPath(g,k*1.03);g.fillStyle=col;g.globalAlpha=.55;g.fill();g.restore();}
   diaPath(g,k);g.fillStyle=col;g.fill();}
-function contact(g,x,y){const F=TH.fill,c=F.aoCol||'0,0,0';g.save();diaPath(g,1);g.clip();
+function contact(g,x,y){const F=TH.fill;if(!F)return;const c=F.aoCol||'0,0,0';g.save();diaPath(g,1);g.clip();
   for(const[dx,dy,mx,my]of[[0,-1,HW/2,-HH/2],[-1,0,-HW/2,-HH/2],[0,1,-HW/2,HH/2],[1,0,HW/2,HH/2]]){if(tile(x+dx,y+dy)!==WALL)continue;
     const gr=g.createLinearGradient(mx,my,-mx*.2,-my*.2);gr.addColorStop(0,'rgba('+c+','+F.ao+')');gr.addColorStop(1,'rgba('+c+',0)');g.fillStyle=gr;g.fillRect(-HW,-HH,HW*2,HH*2);}
   g.restore();}
@@ -1328,17 +1460,17 @@ function build(x,y){
     const nb=(a,b)=>tile(a,b)===WALL?(isTall(a,b)?2:1):0;
     return mkS(HW*2+pad*2,HH*2+z+pad*2,HW+pad,HH+z+pad,g=>{
       const fs=TH.wall.fs*Z,D=makeD(g),Wp=[-HW,0],S=[0,HH],E=[HW,0];
-      if(nb(x,y+1)<mine){faceFill(g,Wp,S,z,F.L);faceDraw(g,Wp,S,z,fs,(i,j,nc,nr)=>TH.wall.face('L',i,j,nc,nr,x,y,R));}
-      if(nb(x+1,y)<mine){faceFill(g,S,E,z,F.R);faceDraw(g,S,E,z,fs,(i,j,nc,nr)=>TH.wall.face('R',i,j,nc,nr,x,y,R));}
-      diaPath(g,1,z);g.fillStyle=F.top(x,y,R);g.fill();
-      g.strokeStyle=F.rim;g.lineWidth=1;g.beginPath();g.moveTo(-HW,-z);g.lineTo(0,HH-z);g.lineTo(HW,-z);g.stroke();
+      if(nb(x,y+1)<mine){if(F)faceFill(g,Wp,S,z,F.L);faceDraw(g,Wp,S,z,fs,(i,j,nc,nr)=>TH.wall.face('L',i,j,nc,nr,x,y,R));}
+      if(nb(x+1,y)<mine){if(F)faceFill(g,S,E,z,F.R);faceDraw(g,S,E,z,fs,(i,j,nc,nr)=>TH.wall.face('R',i,j,nc,nr,x,y,R));}
+      if(F){diaPath(g,1,z);g.fillStyle=F.top(x,y,R);g.fill();
+      g.strokeStyle=F.rim;g.lineWidth=1;g.beginPath();g.moveTo(-HW,-z);g.lineTo(0,HH-z);g.lineTo(HW,-z);g.stroke();}
       TH.wall.top(D,x,y,z,R);
     },[[-HW,0],[-HW,-z],[0,-HH-z],[HW,-z],[HW,0],[0,HH]]);
   }
   const lift=t===DOOR?HW*1.1:0;
   return mkS(HW*2+pad*2,HH*2+pad*2+lift,HW+pad,HH+pad+lift,g=>{
     const D=makeD(g),n=fbm(x*.35,y*.35,17);
-    fillDia(g,t===FLOOR?F.floor(x,y,n,R):F.corr(x,y,R),t===FLOOR?F.inset:F.inset-.04,R);
+    if(F)fillDia(g,t===FLOOR?F.floor(x,y,n,R):F.corr(x,y,R),t===FLOOR?F.inset:F.inset-.04,R);
     if(t===FLOOR){contact(g,x,y);TH.floor(D,x,y,R);}else TH.corr(D,x,y,R);
     if(t===DOOR)D.up(.5,.5,'+',TH.door,18,10);
   },null);
@@ -1502,15 +1634,15 @@ function drawFlame(tc,t){
 // Neue Ebene oder neue Darstellung: Welt auslosen, Ausstattung neu verteilen
 function chooseWorld(){
   if(DESIGN==='aquarell')TH=AQUA;
-  else{let i;do i=Math.floor(Math.random()*WORLDS.length);while(WORLDS.length>1&&i===lastWorld);lastWorld=i;TH=WORLDS[i];}
+  else{const L=pool();let i;do i=Math.floor(Math.random()*L.length);while(L.length>1&&i===lastWorld);lastWorld=i;TH=L[i];}
   levelSeed=(Math.random()*1e9)|0;cache.clear();furnish();
 }
 function restore(st){
-  const t=st&&LTH.find(x=>x.id===st.id);
-  if(DESIGN==='aquarell')TH=AQUA;else if(t&&t!==AQUA){TH=t;lastWorld=WORLDS.indexOf(t);}else{chooseWorld();return;}
+  const t=st&&pool().find(x=>x.id===st.id);
+  if(DESIGN==='aquarell')TH=AQUA;else if(t){TH=t;lastWorld=pool().indexOf(t);}else{lastWorld=-1;chooseWorld();return;}
   if(st&&st.seed)levelSeed=st.seed;cache.clear();furnish();
 }
-return{render,chooseWorld,restore,state:()=>({id:TH.id,seed:levelSeed}),invalidate:()=>cache.clear(),get theme(){return TH;},worlds:WORLDS};
+return{render,chooseWorld,restore,resetPick:()=>{lastWorld=-1;},state:()=>({id:TH.id,seed:levelSeed}),invalidate:()=>cache.clear(),get theme(){return TH;},worlds:WORLDS};
 })();
 levelHook=()=>{if(DESIGN!=='klassisch')LASUR.chooseWorld();showWorld();saveGame(false);};
 lasurInv=LASUR.invalidate;
@@ -1518,8 +1650,9 @@ lasurInv=LASUR.invalidate;
 // ---------- Einstellungen: Darstellung und Helligkeit ----------
 function showWorld(){
   const t=DESIGN==='klassisch'?null:LASUR.theme,el=$('world'),now=$('worldNow');
-  if(el)el.textContent=t&&DESIGN==='welten'?t.name:'';
-  if(now)now.textContent=DESIGN==='welten'?'Diese Ebene: '+t.name:'';
+  const named=DESIGN==='welten'||DESIGN==='ascii';
+  if(el)el.textContent=t&&named?t.name:'';
+  if(now)now.textContent=named?'Diese Ebene: '+t.name:'';
   stage.classList.toggle('paper',!!(t&&t.light));
   cv.style.filter=DESIGN==='klassisch'?'brightness('+(.55+BR*1.125).toFixed(2)+')':'';
 }
@@ -1531,7 +1664,7 @@ function setBright(v){
 }
 function setDesign(v){
   if(v===DESIGN)return;DESIGN=v;try{localStorage.setItem('verliese-design',v);}catch(e){}
-  if(v!=='klassisch')LASUR.chooseWorld();
+  if(v!=='klassisch'){LASUR.resetPick();LASUR.chooseWorld();}
   document.querySelectorAll('input[name="design"]').forEach(i=>{i.checked=i.value===DESIGN;});
   showWorld();
 }
@@ -1592,6 +1725,68 @@ $('newNow').addEventListener('click',()=>{const b=$('newNow');
 $('againLoad').addEventListener('click',()=>{if(loadGame())afterSwap();});
 window.addEventListener('pagehide',()=>saveGame(false));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)saveGame(false);});
+
+// ---------- Monster-Steckbriefe ----------
+const MONINFO={
+  K:{sp:['Fliegt schnell heran und pickt zu.'],tip:'Harmlos, aber lästig. Ein, zwei Schläge mit dem Streitkolben genügen.'},
+  E:{sp:['Ein großer, flugunfähiger Laufvogel.'],tip:'Schwach. Gute Gelegenheit für die ersten Erfahrungspunkte.'},
+  B:{sp:['Flattert zickzack und unberechenbar umher, jeder zweite Zug geht in eine zufällige Richtung.','Schwer zu treffen.'],tip:'Nicht hinterherjagen. Stell dich in einen Gang und lass sie zu dir kommen.'},
+  S:{sp:['Beißt schwach, ist aber zäh für ihre Größe.'],tip:'Ungefährlich, solange du nicht schon schwer verletzt bist.'},
+  H:{sp:['Schlägt mit 1W8 für ein Monster der ersten Stufe kräftig zu.'],tip:'Der gefährlichste Gegner der ersten Ebenen. Beschieß ihn mit Pfeilen, bevor er dich erreicht.'},
+  I:{sp:['Lässt dich bei einem Treffer erstarren. Erstarrt kannst du dich für einige Züge nicht wehren.','Macht selbst keinen Schaden.','Sehr gut gepanzert.'],tip:'Allein kaum gefährlich. Zusammen mit anderen Monstern tödlich, weil du wehrlos bist. Mit Pfeilen aus der Ferne bekämpfen.'},
+  R:{sp:['Giftbiss: senkt bei einem Treffer oft deine Stärke um 1.','Schwer zu treffen.'],tip:'Nicht in den Nahkampf, wenn es sich vermeiden lässt. Der Ring der Stärkeerhaltung schützt, der Trank der Wiederherstellung heilt den Verlust.'},
+  O:{sp:['Kräftiger Schlag mit 1W8.','Wird oft wach, wenn es dich sieht.'],tip:'Solide Gegner. Mit voller Lebensenergie im Nahkampf gut machbar.'},
+  Z:{sp:['Langsam im Denken, aber zäh und gut gepanzert.'],tip:'Braucht viele Treffer. Lieber aus der Ferne schwächen.'},
+  L:{sp:['Stiehlt bei einem Treffer einen Teil deines Goldes und verschwindet dann.','Lässt beim Tod Gold fallen.'],tip:'Töte ihn, bevor er dich berührt, am besten mit Pfeilen oder einem Zauberstab. Dann bekommst du sein Gold.'},
+  C:{sp:['Greift dreimal pro Zug an: 1W2, 1W5 und 1W5.','Schwer zu treffen.'],tip:'Gefährlich durch die vielen Angriffe. Gute Rüstung hilft hier besonders.'},
+  Q:{sp:['Greift zweimal pro Zug an, jeweils 1W5.','Wird oft wach, wenn es dich sieht.'],tip:'Zieh dich in einen Gang zurück, damit nur es dich erreicht.'},
+  A:{sp:['Ein Treffer lässt deine Rüstung rosten und senkt ihren Wert um 1.','Macht selbst keinen Schaden.','Lederrüstungen rosten nicht.'],tip:'Zieh vorher die Metallrüstung aus (T) oder lies die Schriftrolle des Rüstungsschutzes. Danach wieder anziehen.'},
+  N:{sp:['Stiehlt bei einem Treffer einen magischen Gegenstand (Trank, Schriftrolle, Ring oder Stab) und verschwindet.','Macht keinen Schaden.'],tip:'Aus der Ferne töten. Wenn sie dich erreicht, ist meist etwas Wertvolles weg.'},
+  Y:{sp:['Zwei Klauenangriffe pro Zug, jeweils 1W6.'],tip:'Ein harter Brocken. Mit Heiltrank in Reserve angehen.'},
+  T:{sp:['Drei Angriffe pro Zug: 1W8, 1W8 und 2W6.','Regeneriert jeden Zug einen Lebenspunkt.','Wird oft wach, wenn es dich sieht.'],tip:'Sehr gefährlich. Schnell und mit aller Kraft töten, sonst heilt er sich. Blitz, Feuer oder Kälte sind ideal.'},
+  W:{sp:['Lebensentzug: ein Treffer kann dir eine Erfahrungsstufe und dauerhaft Lebenspunkte rauben.'],tip:'Kampf möglichst vermeiden oder aus der Ferne erledigen. Jeder Treffer kann dich dauerhaft schwächen.'}
+};
+const dice=d=>d[0]===0?'kein Schaden':d[0]+'W'+d[1];
+const pct=v=>Math.round(Math.max(0,Math.min(1,v))*100)+' %';
+let monSel=null;
+function openMon(m){
+  monSel=m;const hall=P.halluc>0,t=hall?LVL_MONS[rnd(LVL_MONS.length)]:m.t,T=MON[t],I=MONINFO[t]||{sp:[],tip:''};
+  const box=$('monBody');
+  const w=P.weap&&P.weap.k===')'?P.weap:null,hplus=(w?w.hp:0)+STR_PLUS(effStr())+ringSum(R_DEX);
+  const youHit=(P.lvl+T.arm+hplus)/20,itHit=(T.lvl+armorClass())/20;
+  const n=Math.max(0,Math.min(10,Math.ceil(m.hp/m.maxhp*10))),hurt=m.hp>=m.maxhp?'unverletzt':n>=7?'leicht verletzt':n>=4?'verletzt':'schwer verletzt';
+  const st=[];
+  if(m.held)st.push('festgehalten');else st.push(m.run?'jagt dich':'schläft oder ruht');
+  if(m.slow)st.push('verlangsamt');if(m.haste)st.push('beschleunigt');if(m.huh>0)st.push('verwirrt');if(m.canc)st.push('gebannt');if(m.inv)st.push('unsichtbar');
+  const sp=I.sp.slice();if(T.mean&&!sp.some(x=>x.includes('wach')))sp.push('Angriffslustig: wird oft wach, wenn es dich sieht.');
+  if(m.canc)sp.unshift('Gebannt: Seine besonderen Fähigkeiten wirken nicht mehr.');
+  $('monTitle').innerHTML='<span class="mg" style="color:'+T.col+'">'+t+'</span>'+escapeHtml(T.n);
+  box.innerHTML=(hall?'<p class="halnote">Du bist berauscht. Was du hier liest, stimmt vermutlich nicht.</p>':'')+
+    '<div class="mstat">'+
+      '<div><span>Stufe</span><b>'+T.lvl+'</b></div>'+
+      '<div><span>Rüstung</span><b>'+(10-T.arm)+'</b></div>'+
+      '<div><span>Angriff</span><b>'+T.dmg.map(dice).join(' · ')+'</b></div>'+
+      '<div><span>Erfahrung</span><b>'+m.exp+'</b></div>'+
+    '</div>'+
+    '<div class="mbar"><span class="bar"><i style="width:'+(n*10)+'%"></i></span><span>'+hurt+'</span></div>'+
+    '<p class="mstate">'+st.join(' · ')+'</p>'+
+    '<div class="mchance"><div><span>Du triffst es</span><b>'+pct(youHit)+'</b></div><div><span>Es trifft dich</span><b>'+(T.dmg.every(d=>d[0]===0)&&!T.freeze&&!T.rust&&!T.steal?'harmlos':pct(itHit))+'</b></div></div>'+
+    '<h3>Besonderheiten</h3><ul class="msp">'+(sp.length?sp.map(x=>'<li>'+escapeHtml(x)+'</li>').join(''):'<li>Keine.</li>')+'</ul>'+
+    '<h3>Tipp</h3><p class="mtip">'+escapeHtml(I.tip)+'</p>';
+  $('monSheet').hidden=false;$('monX').focus();
+}
+function closeMon(){$('monSheet').hidden=true;monSel=null;stage.focus({preventScroll:true});}
+$('monX').addEventListener('click',closeMon);
+$('monSheet').addEventListener('click',ev=>{if(ev.target===$('monSheet'))closeMon();});
+// Welches sichtbare Monster liegt unter dem Finger? Zeichen stehen über ihrem Feld, deshalb nach Bildabstand suchen.
+function monUnder(cx,cy,tx,ty){
+  let best=null,bd=1e9;
+  for(const m of mons){if(!monVisible(m))continue;
+    const[sx,sy]=toS(m.rx+.5,m.ry+.5),gy=sy-17*Z*.62,d=Math.hypot(cx-sx,(cy-gy)*1.2);
+    const onTile=m.x===tx&&m.y===ty;
+    if((d<17*Z||onTile)&&(onTile?d-1000:d)<bd){bd=onTile?d-1000:d;best=m;}}
+  return best;
+}
 
 // ---------- Start ----------
 resize();if(!loadGame())newGame();cam.x=P.x+.5;cam.y=P.y+.5;refresh();updateSaveInfo();
